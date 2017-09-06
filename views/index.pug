@@ -1,0 +1,110 @@
+extends layout
+
+block page
+  body
+    header(class="circle--header" style=`background-image: url(${background})`)
+      .bounds
+        .circle--fluid
+          .circle--fluid--cell
+            a(class="logo" href="/")
+              img(src="images/twitter.svg")
+              img(src=`${profilePic}`)
+              h1= username
+          .circle--fluid--cell.align-right
+            nav
+              ul.circle--inline
+                li
+                  a Sign Out
+
+    .app--tweet
+      form
+        .circle--fluid
+          .circle--fluid--cell.circle--fluid--primary.align-bottom.app--tweet--post
+            div(class="app--avatar" style=`background-image: url(${profilePic})`)
+              img(src=`${profilePic}`)
+            textarea(class="circle--textarea--input" placeholder="What's happening?" id="tweet-textarea")
+            strong.app--tweet--char#tweet-char
+          .circle--fluid--cell.align-bottom
+            button.button-primary Tweet
+
+    .bounds.app--body
+      .app--section--header
+        .grid-33
+          .app--section--heading
+            h2 Timeline
+        .grid-33
+          .app--section--heading
+            strong= following
+            h2 Following
+        .grid-33
+          .app--section--heading
+            h2 Direct Messages
+
+      .grid-33
+        .app--section
+          ul.app--tweet--list
+            each tweet in tweets
+              li
+                strong.app--tweet--timestamp #{tweet.created_at}
+                a.app--tweet--author
+                  div(class="app--avatar" style=`background-image: url(${profilePic})`)
+                    img(src=`${profilePic}`)
+                  h4= name
+                  p @#{username}
+                p #{tweet.text}
+                ul.app--tweet--actions.circle--list--inline
+                  li
+                    a.app--reply
+                      span.tooltip Reply
+                      img(src="images/reply.svg")
+                  li
+                    a.app--retweet
+                      span.tooltip Retweet
+                      img(src="images/retweet.svg")
+                      strong #{tweet.retweet_count}
+                  li
+                    a.app--like
+                      span.tooltip Like
+                      img(src="images/like.svg")
+                      strong #{tweet.favorite_count}
+
+      .grid-33
+        .app--section
+          ul.app--user--list
+            each friend in friends
+              li
+                .circle--fluid
+                  .circle--fluid--cell.circle--fluid--primary
+                    a.app--tweet--author
+                      div(class="app--avatar" style=`background-image: url(${friend.profile_image_url_https})`)
+                        img(src=`${friend.profile_image_url_https}`)
+                      h4 #{friend.name}
+                      p @#{friend.screen_name}
+                  .circle--fluid--cell
+                    a.button.button-text Unfollow
+
+      .grid-33
+        .app--section
+          ul.app--message--list
+            each convo, index in convos
+              li
+                h3 Conversation with
+                  a  #{index}
+                ul.app--message--conversation
+                  each dm in convo
+                    if dm.sender_screen_name
+                      li.app--message
+                        div(class="app--avatar" style=`background-image: url(${dm.profile_image_url_https})`)
+                          img(src=`${dm.profile_image_url_https}`)
+                        p.app--message--text #{dm.text}
+                        p.app--message--timestamp #{dm.created_at}
+                    else
+                      li.app--message--me
+                        div(class="app--avatar" style=`background-image: url(${profilePic})`)
+                          img(src=`${profilePic}`)
+                        p.app--message--text #{dm.text}
+                        p.app--message--timestamp #{dm.created_at}
+
+    script(src="/socket.io/socket.io.js")
+    script(src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous")
+    script(src="js/client.js")
