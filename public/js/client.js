@@ -71,7 +71,3 @@ socket.on('tweet', function(data){
     alert('Your tweet was too long or blank, try again!');
   }
 });
-
-
-//remember to comment on where is better to store variable on req or res in express
-//remember to comment what is the best way to load new data without refreshing -- is there a way to push data and make call
